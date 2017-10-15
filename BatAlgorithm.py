@@ -105,6 +105,7 @@ class BatAlgorithm():
                     #cari v dan x baru dari setiap bat dengan menggunakan eq. 3 dan 4 dari bat algorithm
                     self.v[i][j] = self.v[i][j] + (self.x[i][j] - self.terbaik[j])*self.frekuensi[i]
                     solusi[i][j] = self.x[i][j] + self.v[i][j]
+                    solusi[i][j] = self.normalisasi_batas(solusi[i][j])
                 
                 random = np.random.uniform(0,1)
                 #jika nilai random [0,1] lebih besar dari nilai pulse rate dari bat tersebut, maka lakukan local search berdasarkan bat terbaik
@@ -112,12 +113,11 @@ class BatAlgorithm():
                     for j in range(self.dimensi):
                         random = np.random.uniform(-1.0,1.0)
                         solusi[i][j] = self.terbaik[j] + random*Arata2
+                        solusi[i][j] = self.normalisasi_batas(solusi[i][j])
                 
                 
-                for j in range(self.dimensi):
-                    solusi[i][j] = self.normalisasi_batas(solusi[i][j]) 
                 #hitung nilai fitness dari solusi baru
-                nilai_fitness = self.fungsi(self.x[i])
+                nilai_fitness = self.fungsi(solusi[i])
                 
                 random = np.random.uniform(0,1)
                 
@@ -128,14 +128,16 @@ class BatAlgorithm():
                 
                 if(self.nilai_fitness[i] < self.nilai_fitness_minimum):
                     #ganti solusi terbaik
-                    self.nilai_fitness_minimum = self.nilai_fitness_minimum
+                    self.nilai_fitness_minimum = self.fungsi(solusi[i])
                     for j in range(self.dimensi):
                         self.terbaik[j] = self.x[i][j] 
                     
                     #update nilai loudness dan pulse rate setiap bat
                     self.A[i] = self.A[i]*self.alpha
                     self.r[i] = self.r0*(1 - math.exp(-1*self.gamma*i))
-        
+            print("Nilai fitness generasi ke (",n,") : ",self.nilai_fitness)
+            print("Nilai fitness terbaik ",self.nilai_fitness_minimum)
+            print("Solusi terbaik ",self.terbaik)
         print(self.nilai_fitness_minimum)
         print(self.terbaik)
         
