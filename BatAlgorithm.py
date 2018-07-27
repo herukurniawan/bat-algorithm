@@ -23,8 +23,8 @@ class BatAlgorithm():
         self.r = [self.r0 for i in range(self.n_bat)]
         
         #inisialisasi upperbound dan lowerbound setiap bat
-        self.upbound = [[0.0 for i in range(self.dimensi)] for j in range(self.n_bat)]
-        self.lowbound =  [[0.0 for i in range(self.dimensi)] for j in range(self.n_bat)]
+        self.upbound = [[self.b_atas for i in range(self.dimensi)] for j in range(self.n_bat)]
+        self.lowbound =  [[self.b_bawah for i in range(self.dimensi)] for j in range(self.n_bat)]
         
         #inisialisasi nilai 0 untuk semua bat
         self.frekuensi = [0.0] * n_bat
@@ -37,45 +37,23 @@ class BatAlgorithm():
         
         #inisialisasi nilai fitness untuk semua bat
         self.nilai_fitness = [0.0] * n_bat
-        self.nilai_fitness_minimum = 0.0
+        self.nilai_fitness_minimum = float("inf")
         
         #inisialisasi solusi terbaik
         self.terbaik = [0.0] * dimensi
-    
-    def bat_terbaik(self):
-        i = 0
-        j = 0
-        #cari nilai fitness terbaik dan catat indeksnya pada variabel j
-        for i in range(self.n_bat):
-            if self.nilai_fitness[i] < self.nilai_fitness[j] :
-                j = i
-                
-        #simpan nilai-nilai dari setiap dimensi pada solusi terbaik
-        for i in range(self.dimensi):
-            self.terbaik[i] = self.x[j][i]
-        
-        #simpan nilai fitness dari solusi terbaik
-        self.nilai_fitness_minimum = self.nilai_fitness[j]
-    
+
     def proses_init(self):
-        #set semua upperbound dan lowerbound dengan parameter yang telah diset sebelumnya
-        for i in range(self.n_bat):
-            for j in range(self.dimensi):
-                self.lowbound[i][j] = self.b_bawah
-                self.upbound[i][j] = self.b_atas
-        
         #generate solusi baru dari lowerbound dan upperbound serta set frekuensi semua bat ke 0
         #bat belum mencari target v = 0.
         for i in range(self.n_bat):
-            self.frekuensi[i] = 0
             for j in range(self.dimensi):
                 random = np.random.uniform(0,1)
-                self.v[i][j] = 0.0
                 self.x[i][j] = self.lowbound[i][j] + (self.upbound[i][j] - self.lowbound[i][j])*random
             self.nilai_fitness[i] = self.fungsi(self.x[i])
-        
-        #cari bat dengan nilai fitness terendah (minimum)
-        self.bat_terbaik()
+            if self.nilai_fitness[i] < self.nilai_fitness_minimum:
+		self.nilai_fitness_minimum = self.nilai_fitness[i]
+		for j in range(self.dimensi):
+		    self.terbaik[j] = self.x[i][j]
     
     def normalisasi_batas(self, nilai):
         #jika nilai melebihi batas atas maka set nilai menjadi batas atas
