@@ -51,9 +51,9 @@ class BatAlgorithm():
                 self.x[i][j] = self.lowbound[i][j] + (self.upbound[i][j] - self.lowbound[i][j])*random
             self.nilai_fitness[i] = self.fungsi(self.x[i])
             if self.nilai_fitness[i] < self.nilai_fitness_minimum:
-		        self.nilai_fitness_minimum = self.nilai_fitness[i]
-		        for j in range(self.dimensi):
-			        self.terbaik[j] = self.x[i][j]
+		self.nilai_fitness_minimum = self.nilai_fitness[i]
+		for j in range(self.dimensi):
+		    self.terbaik[j] = self.x[i][j]
     
     def normalisasi_batas(self, nilai):
         #jika nilai melebihi batas atas maka set nilai menjadi batas atas
